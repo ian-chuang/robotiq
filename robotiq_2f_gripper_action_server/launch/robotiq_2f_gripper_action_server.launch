@@ -8,7 +8,7 @@
   <arg name="max_effort" default="100.0" />
 
   <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_action_server"
-    type="robotiq_2f_gripper_action_server_node">
+    type="robotiq_2f_gripper_action_server_node" output="screen">
     <param name="gripper_name" type="str" value="$(arg gripper_name)" />
     <param name="min_gap" type="double" value="$(arg min_gap)" />
     <param name="max_gap" type="double" value="$(arg max_gap)" />

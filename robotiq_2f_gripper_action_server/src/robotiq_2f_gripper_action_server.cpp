@@ -4,6 +4,7 @@
  */
 
 #include "robotiq_2f_gripper_action_server/robotiq_2f_gripper_action_server.h"
+#include <sensor_msgs/JointState.h>
 
 // To keep the fully qualified names managable
 
@@ -98,8 +99,16 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
   as_.registerGoalCallback(boost::bind(&Robotiq2FGripperActionServer::goalCB, this));
   as_.registerPreemptCallback(boost::bind(&Robotiq2FGripperActionServer::preemptCB, this));
 
-  state_sub_ = nh_.subscribe("input", 1, &Robotiq2FGripperActionServer::analysisCB, this);
-  goal_pub_ = nh_.advertise<GripperOutput>("output", 1);
+  state_sub_ = nh_.subscribe("Robotiq2FGripperRobotInput", 1, &Robotiq2FGripperActionServer::analysisCB, this);
+  goal_pub_ = nh_.advertise<GripperOutput>("Robotiq2FGripperRobotOutput", 1);
+
+  joint_pub = nh_.advertise<sensor_msgs::JointState>("joint_states", 10);
+  
+  std::vector<double> joint_positions(1);
+  std::vector<std::string> joint_names(1, "");
+  joint_names.at(0).assign("finger_joint");
+  joint_msg.name = joint_names;
+  joint_msg.position = joint_positions;
 
   as_.start();
 }
@@ -141,7 +150,16 @@ void Robotiq2FGripperActionServer::analysisCB(const GripperInput::ConstPtr& msg)
 {
   current_reg_state_ = *msg;
 
+  double dist_per_tick = (gripper_params_.max_gap_ - gripper_params_.min_gap_) / 255;
+
+  // joint_msg.position.at(0) = current_reg_state_.gPO * dist_per_tick + gripper_params_.min_gap_;
+  joint_msg.position.at(0) = 0.8*current_reg_state_.gPO/230; 
+  joint_pub.publish(joint_msg);
+
+
   if (!as_.isActive()) return;
+
+  ROS_INFO("Current gSTA state: %d", current_reg_state_.gSTA);
 
   // Check to see if the gripper is in its activated state
   if (current_reg_state_.gSTA != 0x3)

@@ -10,6 +10,7 @@
 #include <string>
 // ROS standard
 #include <ros/ros.h>
+#include <sensor_msgs/JointState.h>
 #include <actionlib/server/simple_action_server.h>
 #include <control_msgs/GripperCommandAction.h>
 // Repo specific includes
@@ -70,6 +71,9 @@ private:
 
   GripperOutput goal_reg_state_; // Goal information in gripper-register form
   GripperInput current_reg_state_; // State info in gripper-register form
+  ros::Publisher joint_pub;
+  sensor_msgs::JointState joint_msg;
+
 
   /* Used to translate GripperCommands in engineering units
    * to/from register states understood by gripper itself. Different
