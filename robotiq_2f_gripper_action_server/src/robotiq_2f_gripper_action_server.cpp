@@ -45,7 +45,7 @@ namespace
     double dist_per_tick = (params.max_gap_ - params.min_gap_) / 255;
     double eff_per_tick = (params.max_effort_ - params.min_effort_) / 255;
 
-    result.rPR = static_cast<uint8_t>((params.max_gap_ - goal.command.position) / dist_per_tick);
+    result.rPR = static_cast<uint8_t>((goal.command.position)*230 / 0.8);
     result.rFR = static_cast<uint8_t>((goal.command.max_effort - params.min_effort_) / eff_per_tick);
 
     ROS_INFO("Setting goal position register to %hhu", result.rPR);

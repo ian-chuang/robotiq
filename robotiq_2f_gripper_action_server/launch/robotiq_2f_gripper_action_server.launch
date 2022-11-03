@@ -2,9 +2,9 @@
 
 <launch>
   <arg name="gripper_name" default="gripper" />
-  <arg name="min_gap" default="-0.017" />
-  <arg name="max_gap" default="0.085" /> <!-- meters -->
-  <arg name="min_effort" default="30.0" />
+  <arg name="min_gap" default="-0.01" />
+  <arg name="max_gap" default="0.81" /> <!-- moveit units -->
+  <arg name="min_effort" default="-0.1" />
   <arg name="max_effort" default="100.0" />
 
   <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_action_server"
