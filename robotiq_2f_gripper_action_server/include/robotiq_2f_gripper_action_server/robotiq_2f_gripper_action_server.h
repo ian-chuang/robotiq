@@ -62,6 +62,7 @@ public:
 
 private:
   void issueActivation();
+  void issueReset();
 
   ros::NodeHandle nh_;
   actionlib::SimpleActionServer<control_msgs::GripperCommandAction> as_;
