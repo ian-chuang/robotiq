@@ -222,8 +222,8 @@ void Robotiq2FGripperActionServer::issueActivation()
   out.rGTO = 0x1; // go to position
   out.rATR = 0x0; // No emergency release
   out.rSP = 255; // Middle ground speed
-  out.rPR = 0x0; // effort
-  out.rFR = 150; // position
+  out.rPR = 0x0; // position
+  out.rFR = 150; // effort
   goal_reg_state_ = out;
   goal_pub_.publish(out);
 }
@@ -237,8 +237,8 @@ void Robotiq2FGripperActionServer::issueReset()
   out.rGTO = 0x0; // go to position
   out.rATR = 0x0; // No emergency release
   out.rSP = 0x0; // Middle ground speed
-  out.rPR = 0x0; // effort
-  out.rFR = 0x0; // position
+  out.rPR = 0x0; // position
+  out.rFR = 0x0; // effort
   goal_reg_state_ = out;
   goal_pub_.publish(out);
 }

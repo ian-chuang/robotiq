@@ -47,6 +47,12 @@
     prefix=""
     transmission_hw_interface="$(arg transmission_hw_interface)"/>
 
+    <link name="base_link"/>
+    <joint name="base_link-robotiq_arg2f_base_link" type="fixed">
+      <parent link="base_link" />
+      <child link="robotiq_arg2f_base_link" />
+    </joint>
+
   <!--
     Attach the Gazebo model to Gazebo's world frame.
   -->
