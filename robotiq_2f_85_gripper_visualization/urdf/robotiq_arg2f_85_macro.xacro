@@ -4,20 +4,25 @@
   <xacro:include filename="$(find robotiq_2f_85_gripper_visualization)/urdf/inc/robotiq_arg2f_85_transmissions.xacro" />
 
   <xacro:macro name="robotiq_arg2f_85" params="
-    prefix 
-    transmission_hw_interface:=hardware/interface/EffortJointInterface"
-  >
+    prefix transmission_hw_interface:=hardware/interface/EffortJointInterface">
     <!-- Add URDF transmission elements (for ros_control) -->
     <xacro:robotiq_arg2f_85_transmission prefix="${prefix}" hw_interface="${transmission_hw_interface}"/>
+
+    <xacro:property name="max_effort" value="100.0" />
+    <xacro:property name="max_velocity" value="2.0" />
+    <xacro:property name="finger_mass_scale" value="3.0" />  <!-- The fingers shake if they don't weigh enough -->
 
     <!-- fingers links macros -->
     <xacro:macro name="outer_knuckle" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_outer_knuckle">
         <inertial>
-          <origin xyz="-0.000200000000003065 0.0199435877845359 0.0292245259211331" rpy="0 0 0" />
+          <!-- <origin xyz="-0.000200000000003065 0.0199435877845359 0.0292245259211331" rpy="0 0 0" />
           <mass value="0.00853198276973456" />
-          <inertia ixx="2.89328108496468E-06" ixy="-1.57935047237397E-19" ixz="-1.93980378593255E-19" iyy="1.86719750325683E-06" iyz="-1.21858577871576E-06" izz="1.21905238907251E-06" />
-          </inertial>
+          <inertia ixx="2.89328108496468E-06" ixy="-1.57935047237397E-19" ixz="-1.93980378593255E-19" iyy="1.86719750325683E-06" iyz="-1.21858577871576E-06" izz="1.21905238907251E-06" /> -->
+          <origin xyz="-9.37041302356095e-12 0.01793673167077561 0.0009235341802113242" rpy="0 0 0"/>
+          <mass value="${0.018476648450763997 * finger_mass_scale}"/>
+          <inertia ixx="${4e-06 * finger_mass_scale}" iyy="${1e-06 * finger_mass_scale}" izz="${3e-06 * finger_mass_scale}" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+        </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
@@ -39,10 +44,13 @@
     <xacro:macro name="outer_finger" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_outer_finger">
         <inertial>
-          <origin xyz="0.00030115855001899 0.0373907951953854 -0.0208027427000385" rpy="0 0 0" />
+          <!-- <origin xyz="0.00030115855001899 0.0373907951953854 -0.0208027427000385" rpy="0 0 0" />
           <mass value="0.022614240507152" />
-          <inertia ixx="1.52518312458174E-05" ixy="9.76583423954399E-10" ixz="-5.43838577022588E-10" iyy="6.17694243867776E-06" iyz="6.78636130740228E-06" izz="1.16494917907219E-05" />
-          </inertial>
+          <inertia ixx="1.52518312458174E-05" ixy="9.76583423954399E-10" ixz="-5.43838577022588E-10" iyy="6.17694243867776E-06" iyz="6.78636130740228E-06" izz="1.16494917907219E-05" /> -->
+          <origin xyz="-2.381768015458948e-12 0.00277667011824432 0.021399053905477743" rpy="0 0 0"/>
+          <mass value="${0.02729659380694228 * finger_mass_scale}"/>
+          <inertia ixx="${7e-06 * finger_mass_scale}" iyy="${8e-06 * finger_mass_scale}" izz="${2e-06 * finger_mass_scale}" ixy="0.0" iyz="${-1e-06 * finger_mass_scale}" ixz="0.0"/>
+        </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
@@ -64,10 +72,13 @@
     <xacro:macro name="inner_knuckle" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_inner_knuckle">
         <inertial>
-          <origin xyz="0.000123011831763771 0.0507850843201817 0.00103968640075166" rpy="0 0 0" />
-        <mass value="0.0271177346495152" />
-          <inertia ixx="2.61910379223783E-05" ixy="-2.43616858946494E-07" ixz="-6.37789906117123E-09" iyy="2.8270243746167E-06" iyz="-5.37200748039765E-07" izz="2.83695868220296E-05" />
-          </inertial>
+          <!-- <origin xyz="0.000123011831763771 0.0507850843201817 0.00103968640075166" rpy="0 0 0" />
+          <mass value="0.0271177346495152" />
+          <inertia ixx="2.61910379223783E-05" ixy="-2.43616858946494E-07" ixz="-6.37789906117123E-09" iyy="2.8270243746167E-06" iyz="-5.37200748039765E-07" izz="2.83695868220296E-05" /> -->
+          <origin xyz="-5.434135948284727e-09 0.018348857047576116 0.02148375395505462" rpy="0 0 0"/>
+          <mass value="${0.029949543712543904 * finger_mass_scale}"/>
+          <inertia ixx="${1.1e-05 * finger_mass_scale}" iyy="${1.1e-05 * finger_mass_scale}" izz="${9e-06 * finger_mass_scale}" ixy="0.0" iyz="${-5e-06 * finger_mass_scale}" ixz="-0.0"/>
+        </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
@@ -89,10 +100,13 @@
     <xacro:macro name="inner_finger" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_inner_finger">
         <inertial>
-          <origin xyz="0.000299999999999317 0.0160078233491243 -0.0136945669206257" rpy="0 0 0" />
+          <!-- <origin xyz="0.000299999999999317 0.0160078233491243 -0.0136945669206257" rpy="0 0 0" />
           <mass value="0.0104003125914103" />
-          <inertia ixx="2.71909453810972E-06" ixy="1.35402465472579E-21" ixz="-7.1817349065269E-22" iyy="7.69100314106116E-07" iyz="6.74715432769696E-07" izz="2.30315190420171E-06" />
-          </inertial>
+          <inertia ixx="2.71909453810972E-06" ixy="1.35402465472579E-21" ixz="-7.1817349065269E-22" iyy="7.69100314106116E-07" iyz="6.74715432769696E-07" izz="2.30315190420171E-06" /> -->
+          <origin xyz="5.39621183048144e-08 -0.011873888098226633 0.013214451657752282" rpy="0 0 0"/>
+          <mass value="${0.01957844415989899 * finger_mass_scale}"/>
+          <inertia ixx="${5e-06 * finger_mass_scale}" iyy="${4e-06 * finger_mass_scale}" izz="${1e-06 * finger_mass_scale}" ixy="${-0.0 * finger_mass_scale}" iyz="${1e-06 * finger_mass_scale}" ixz="0.0"/>
+        </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
@@ -114,6 +128,11 @@
     <!-- Finger pad link, the default are the "big pads" with rubber-->
     <xacro:macro name="inner_finger_pad" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_inner_finger_pad">
+        <inertial>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+          <mass value="${0.014144625000000003 * finger_mass_scale}"/>
+          <inertia ixx="${2e-06 * finger_mass_scale}" iyy="${2e-06 * finger_mass_scale}" izz="${1e-06 * finger_mass_scale}" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+        </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
@@ -160,7 +179,7 @@
         <parent link="${prefix}robotiq_arg2f_base_link" />
         <child link="${prefix}${fingerprefix}_inner_knuckle" />
         <axis xyz="1 0 0" />
-        <limit lower="0" upper="0.8757" velocity="0.5" effort="1000" />
+        <limit lower="0" upper="0.8757" velocity="${max_velocity}" effort="${max_effort}" />
         <mimic joint="${prefix}finger_joint" multiplier="1" offset="0" />
       </joint>
     </xacro:macro>
@@ -171,9 +190,25 @@
         <parent link="${prefix}${fingerprefix}_outer_finger" />
         <child link="${prefix}${fingerprefix}_inner_finger" />
         <axis xyz="1 0 0" />
-        <limit lower="-0.8757" upper="0" velocity="0.5" effort="1000" />
+        <limit lower="-0.8757" upper="0" velocity="${max_velocity}" effort="${max_effort}" />
         <mimic joint="${prefix}finger_joint" multiplier="-1" offset="0" />
       </joint>
+    </xacro:macro>
+
+    <xacro:macro name="inner_knuckle_to_inner_finger_joint" params="prefix fingerprefix">
+      <!-- This joint closes the kinematic loop. Since loops are not allowed in URDF, but they are
+      allowed in SDF, this is an SDF fragment. -->
+      <gazebo>
+        <joint name="${prefix}${fingerprefix}_inner_knuckle_to_finger_joint" type="revolute">
+          <pose> 0 -0.017901 0.006515 0 0 0</pose>
+          <axis>
+            <xyz>1 0 0</xyz>
+            <use_parent_model_frame>false</use_parent_model_frame>
+          </axis>
+          <parent>${prefix}${fingerprefix}_inner_knuckle</parent>
+          <child>${prefix}${fingerprefix}_inner_finger</child>
+        </joint>
+      </gazebo>
     </xacro:macro>
 
     <xacro:macro name="inner_finger_pad_joint" params="prefix fingerprefix">
@@ -189,32 +224,36 @@
       <xacro:outer_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}"/>
       <xacro:inner_knuckle_joint prefix="${prefix}" fingerprefix="${fingerprefix}" reflect="${reflect}"/>
       <xacro:inner_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}"/>
+      <xacro:inner_knuckle_to_inner_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}" />
       <xacro:inner_finger_pad_joint prefix="${prefix}" fingerprefix="${fingerprefix}"/>
     </xacro:macro>
 
     <!-- base link -->
     <link name="${prefix}robotiq_arg2f_base_link">
-        <inertial>
-          <origin xyz="8.625E-08 -4.6583E-06 0.03145" rpy="0 0 0" />
+      <inertial>
+        <!-- <origin xyz="8.625E-08 -4.6583E-06 0.03145" rpy="0 0 0" />
           <mass value="0.22652" />
-          <inertia ixx="0.00020005" ixy="-4.2442E-10" ixz="-2.9069E-10" iyy="0.00017832" iyz="-3.4402E-08" izz="0.00013478" />
-        </inertial>
-        <visual>
-          <origin xyz="0 0 0" rpy="0 0 0" />
-          <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_visualization/meshes/visual/robotiq_arg2f_base_link.stl" />
-          </geometry>
-          <material name="">
-            <color rgba="0.1 0.1 0.1 1" />
-          </material>
-        </visual>
-        <collision>
-          <origin xyz="0 0 0" rpy="0 0 0" />
-          <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_visualization/meshes/collision/robotiq_arg2f_base_link.stl" />
-          </geometry>
-        </collision>
-      </link>
+          <inertia ixx="0.00020005" ixy="-4.2442E-10" ixz="-2.9069E-10" iyy="0.00017832" iyz="-3.4402E-08" izz="0.00013478" /> -->
+        <origin xyz="-5.185718748549181e-07 -3.2365468532620426e-06 0.031457950869623615" rpy="0 0 0"/>
+        <mass value="${0.6097291052030527*0.37150924577}"/>
+        <inertia ixx="${0.000537*0.37150924577}" iyy="${0.000479*0.37150924577}" izz="${0.000361*0.37150924577}" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://robotiq_2f_85_gripper_visualization/meshes/visual/robotiq_arg2f_base_link.stl" />
+        </geometry>
+        <material name="">
+          <color rgba="0.1 0.1 0.1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://robotiq_2f_85_gripper_visualization/meshes/collision/robotiq_arg2f_base_link.stl" />
+        </geometry>
+      </collision>
+    </link>
 
     <!-- left finger -->
     <xacro:finger_links prefix="${prefix}" fingerprefix="left"/>
@@ -224,7 +263,7 @@
       <parent link="${prefix}robotiq_arg2f_base_link" />
       <child link="${prefix}left_outer_knuckle" />
       <axis xyz="1 0 0" />
-      <limit lower="0" upper="0.8" velocity="0.5" effort="1000" />
+      <limit lower="0" upper="0.8" velocity="${max_velocity}" effort="${max_effort}" />
     </joint>
 
     <!-- right finger -->
@@ -235,7 +274,7 @@
       <parent link="${prefix}robotiq_arg2f_base_link" />
       <child link="${prefix}right_outer_knuckle" />
       <axis xyz="1 0 0" />
-      <limit lower="0" upper="0.81" velocity="0.5" effort="1000" />
+      <limit lower="0" upper="0.81" velocity="${max_velocity}" effort="${max_effort}" />
       <mimic joint="${prefix}finger_joint" multiplier="1" offset="0" />
     </joint>
 
