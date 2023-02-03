@@ -1,20 +1,5 @@
 #include "robotiq_2f_gripper_action_server/robotiq_2f_gripper_action_server.h"
 
-namespace
-{
-  // Defines a default for the c2 model 85 gripper
-  robotiq_2f_gripper_action_server::Robotiq2FGripperParams c2_85_defaults()
-  {
-    robotiq_2f_gripper_action_server::Robotiq2FGripperParams params;
-    params.min_gap_ = -.017;
-    params.max_gap_ = 0.085;
-    params.min_effort_ = 40.0; // This is a guess. Could not find data with quick search.
-    params.max_effort_ = 100.0;
-
-    return params;
-  }
-}
-
 int main(int argc, char** argv)
 {
   // Can be renamed with standard ROS-node launch interface
@@ -23,23 +8,25 @@ int main(int argc, char** argv)
   // Private Note Handle for retrieving parameter arguments to the server
   ros::NodeHandle private_nh("~");
 
-  std::string gripper_name;
-  private_nh.param<std::string>("gripper_name", gripper_name, "gripper");
+  std::string action_server_name;
+  private_nh.param<std::string>("action_server_name", action_server_name, "gripper_controller/gripper_cmd");
 
-  // Fill out 2F-Gripper Params
-  robotiq_2f_gripper_action_server::Robotiq2FGripperParams cparams = c2_85_defaults();
-  
-  // Min because fingers can push forward before the mechanical stops are reached
-  private_nh.param<double>("min_gap", cparams.min_gap_, cparams.min_gap_);
-  private_nh.param<double>("max_gap", cparams.max_gap_, cparams.max_gap_);
-  private_nh.param<double>("min_effort", cparams.min_effort_, cparams.min_effort_);
-  private_nh.param<double>("max_effort", cparams.max_effort_, cparams.max_effort_);
+  robotiq_2f_gripper_action_server::Robotiq2FGripperParams cparams;
+  private_nh.param<double>("min_angle", cparams.min_angle_, 0.0);
+  private_nh.param<double>("max_angle", cparams.max_angle_, 0.8);
+  private_nh.param<double>("min_effort", cparams.min_effort_, 20);
+  private_nh.param<double>("max_effort", cparams.max_effort_, 100);
+  private_nh.param<double>("default_effort", cparams.default_effort_, 100);
+  private_nh.param<std::string>("control_topic", cparams.control_topic_, "robotiq_2f_85_gripper/control");
+  private_nh.param<std::string>("state_topic", cparams.state_topic_, "robotiq_2f_85_gripper/states");
+  private_nh.param<std::string>("joint_states_topic", cparams.joint_states_topic_, "joint_states");
+  private_nh.param<std::string>("joint_name", cparams.joint_name_, "finger_joint");
 
-  ROS_INFO("Initializing Robotiq action server for gripper: %s", gripper_name.c_str());
+  ROS_INFO("Initializing Robotiq action server for gripper: %s", action_server_name.c_str());
 
   // The name of the gripper -> this server communicates over name/inputs and name/outputs
-  robotiq_2f_gripper_action_server::Robotiq2FGripperActionServer gripper (gripper_name, cparams);
+  robotiq_2f_gripper_action_server::Robotiq2FGripperActionServer gripper (action_server_name, cparams);
 
-  ROS_INFO("Robotiq action-server spinning for gripper: %s", gripper_name.c_str());
+  ROS_INFO("Robotiq action-server spinning for gripper: %s", action_server_name.c_str());
   ros::spin();
 }

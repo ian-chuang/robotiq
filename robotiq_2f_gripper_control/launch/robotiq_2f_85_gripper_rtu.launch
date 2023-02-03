@@ -1,6 +1,8 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 
 <launch>
+  <arg name="port" default="/dev/ttyUSB0" />
+
   <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_action_server"
     type="robotiq_2f_gripper_action_server_node" output="screen">
 
@@ -15,6 +17,13 @@
     <param name="joint_states_topic" type="str" value="joint_states" />
     <param name="joint_name" type="str" value="finger_joint" />
 
+  </node>
+
+  <node name="robotiq_2f_gripper_rtu_control" pkg="robotiq_2f_gripper_control"
+    type="Robotiq2FGripperRtuNode.py" output="screen">
+    <param name="port" type="str" value="$(arg port)"/>
+    <param name="control_topic" type="str" value="robotiq_2f_85_gripper/control" />
+    <param name="state_topic" type="str" value="robotiq_2f_85_gripper/states" />
   </node>
 
 </launch>

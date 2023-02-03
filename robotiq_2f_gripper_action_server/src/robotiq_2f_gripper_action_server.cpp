@@ -27,26 +27,33 @@ namespace
     result.rGTO = 0x1; // go to position
     result.rATR = 0x0; // No emergency release
     result.rSP = 128; // Middle ground speed
+
+    double position = goal.command.position;
+    double max_effort = goal.command.max_effort;
+
+    if (max_effort == 0) {
+      max_effort = params.default_effort_;
+    }
     
-    if (goal.command.position > params.max_gap_ || goal.command.position < params.min_gap_)
+    if (position > params.max_angle_ || position < params.min_angle_)
     {
       ROS_WARN("Goal gripper gap size is out of range(%f to %f): %f m",
-               params.min_gap_, params.max_gap_, goal.command.position);
+               params.min_angle_, params.max_angle_, position);
       throw BadArgumentsError();
     }
     
-    if (goal.command.max_effort < params.min_effort_ || goal.command.max_effort > params.max_effort_)
+    if (max_effort < params.min_effort_ || max_effort > params.max_effort_)
     {
       ROS_WARN("Goal gripper effort out of range (%f to %f N): %f N",
-               params.min_effort_, params.max_effort_, goal.command.max_effort);
+               params.min_effort_, params.max_effort_, max_effort);
       throw BadArgumentsError();
     }
 
-    double dist_per_tick = (params.max_gap_ - params.min_gap_) / 255;
+    double dist_per_tick = (params.max_angle_ - params.min_angle_) / 230;
     double eff_per_tick = (params.max_effort_ - params.min_effort_) / 255;
 
-    result.rPR = static_cast<uint8_t>((goal.command.position)*230 / 0.8);
-    result.rFR = static_cast<uint8_t>((goal.command.max_effort - params.min_effort_) / eff_per_tick);
+    result.rPR = static_cast<uint8_t>((position - params.min_angle_) / dist_per_tick);
+    result.rFR = static_cast<uint8_t>((max_effort - params.min_effort_) / eff_per_tick);
 
     ROS_INFO("Setting goal position register to %hhu", result.rPR);
 
@@ -61,10 +68,12 @@ namespace
   T registerStateToResultT(const GripperInput& input, const Robotiq2FGripperParams& params, uint8_t goal_pos)
   {
     T result;
-    double dist_per_tick = (params.max_gap_ - params.min_gap_) / 255;
+    double dist_per_tick = (params.max_angle_ - params.min_angle_) / 230;
     double eff_per_tick = (params.max_effort_ - params.min_effort_) / 255;
 
-    result.position = input.gPO * dist_per_tick + params.min_gap_;
+    result.position = input.gPO * dist_per_tick + params.min_angle_;
+    result.position = std::max(params.min_angle_, std::min(result.position, params.max_angle_));
+    
     result.effort = input.gCU * eff_per_tick + params.min_effort_;
     result.stalled = input.gOBJ == 0x1 || input.gOBJ == 0x2;
     result.reached_goal = input.gPO == goal_pos;
@@ -99,14 +108,14 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
   as_.registerGoalCallback(boost::bind(&Robotiq2FGripperActionServer::goalCB, this));
   as_.registerPreemptCallback(boost::bind(&Robotiq2FGripperActionServer::preemptCB, this));
 
-  state_sub_ = nh_.subscribe("Robotiq2FGripperRobotInput", 1, &Robotiq2FGripperActionServer::analysisCB, this);
-  goal_pub_ = nh_.advertise<GripperOutput>("Robotiq2FGripperRobotOutput", 1);
+  state_sub_ = nh_.subscribe(gripper_params_.state_topic_, 1, &Robotiq2FGripperActionServer::analysisCB, this);
+  goal_pub_ = nh_.advertise<GripperOutput>(gripper_params_.control_topic_, 1);
 
-  joint_pub = nh_.advertise<sensor_msgs::JointState>("joint_states", 10);
+  joint_pub = nh_.advertise<sensor_msgs::JointState>(gripper_params_.joint_states_topic_, 10);
   
   std::vector<double> joint_positions(1);
   std::vector<std::string> joint_names(1, "");
-  joint_names.at(0).assign("finger_joint");
+  joint_names.at(0).assign(gripper_params_.joint_name_);
   joint_msg.name = joint_names;
   joint_msg.position = joint_positions;
 
@@ -162,12 +171,12 @@ void Robotiq2FGripperActionServer::analysisCB(const GripperInput::ConstPtr& msg)
 {
   current_reg_state_ = *msg;
 
-  double dist_per_tick = (gripper_params_.max_gap_ - gripper_params_.min_gap_) / 255;
+  double dist_per_tick = (gripper_params_.max_angle_ - gripper_params_.min_angle_) / 230;
+  double position = current_reg_state_.gPO * dist_per_tick + gripper_params_.min_angle_;
+  position = std::max(gripper_params_.min_angle_, std::min(position, gripper_params_.max_angle_));
 
-  // joint_msg.position.at(0) = current_reg_state_.gPO * dist_per_tick + gripper_params_.min_gap_;
-  joint_msg.position.at(0) = 0.8*current_reg_state_.gPO/230; 
+  joint_msg.position.at(0) = position;
   joint_pub.publish(joint_msg);
-
 
   if (!as_.isActive()) return;
 
