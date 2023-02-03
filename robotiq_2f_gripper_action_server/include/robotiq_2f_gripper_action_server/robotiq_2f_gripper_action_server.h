@@ -38,10 +38,15 @@ typedef control_msgs::GripperCommandResult GripperCommandResult;
  */
 struct Robotiq2FGripperParams
 {
-  double min_gap_; // meters
-  double max_gap_;
-  double min_effort_; // N / (Nm)
+  double min_angle_; // radians
+  double max_angle_;
+  double min_effort_; // N / (Nm) ???
   double max_effort_;
+  double default_effort_;
+  std::string control_topic_;
+  std::string state_topic_;
+  std::string joint_states_topic_;
+  std::string joint_name_;
 };
 
 /**
