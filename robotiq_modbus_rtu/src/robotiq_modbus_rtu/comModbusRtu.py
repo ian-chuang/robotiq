@@ -107,7 +107,7 @@ class ComModbusRtu:
             output.append((response.getRegister(i) & 0xFF00) >> 8)
             output.append( response.getRegister(i) & 0x00FF)
       except:
-         raise ReadGripperError("Failed to get registers from gripper")
+         raise ReadGripperError("Failed to read registers from gripper")
 
       #Output the result
       return output
