@@ -18,7 +18,7 @@ int main(int argc, char** argv)
   private_nh.param<double>("max_effort", cparams.max_effort_, 100);
   private_nh.param<double>("default_effort", cparams.default_effort_, 100);
   private_nh.param<std::string>("control_topic", cparams.control_topic_, "robotiq_2f_85_gripper/control");
-  private_nh.param<std::string>("state_topic", cparams.state_topic_, "robotiq_2f_85_gripper/states");
+  private_nh.param<std::string>("state_topic", cparams.state_topic_, "robotiq_2f_85_gripper/state");
   private_nh.param<std::string>("joint_states_topic", cparams.joint_states_topic_, "joint_states");
   private_nh.param<std::string>("joint_name", cparams.joint_name_, "finger_joint");
 

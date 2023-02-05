@@ -66,6 +66,7 @@ public:
   void analysisCB(const GripperInput::ConstPtr& msg);
 
 private:
+  void publishJointStates(const GripperInput::ConstPtr& msg);
   void issueActivation();
   void issueReset();
 

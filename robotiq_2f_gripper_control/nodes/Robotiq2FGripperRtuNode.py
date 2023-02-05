@@ -59,7 +59,7 @@ def mainLoop():
 
     device = rospy.get_param('~port')
     control_topic = rospy.get_param('~control_topic', 'gripper/control')
-    state_topic = rospy.get_param('~state_topic', 'gripper/states')
+    state_topic = rospy.get_param('~state_topic', 'gripper/state')
 
     # Gripper is a 2F with a TCP connection
     gripper = robotiq_2f_gripper_control.baseRobotiq2FGripper.robotiqbaseRobotiq2FGripper()
