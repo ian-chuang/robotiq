@@ -19,6 +19,9 @@ namespace
   */
   struct BadArgumentsError {};
 
+  double clip(double n, double lower, double upper) {
+    return std::max(lower, std::min(n, upper));
+  }
 
   GripperOutput goalToRegisterState(const GripperCommandGoal& goal, const Robotiq2FGripperParams& params)
   {
@@ -37,7 +40,7 @@ namespace
     
     if (position > params.max_angle_ || position < params.min_angle_)
     {
-      ROS_WARN("Goal gripper gap size is out of range(%f to %f): %f m",
+      ROS_WARN("Goal gripper angle is out of range(%f to %f): %f m",
                params.min_angle_, params.max_angle_, position);
       throw BadArgumentsError();
     }
@@ -71,9 +74,7 @@ namespace
     double dist_per_tick = (params.max_angle_ - params.min_angle_) / 230;
     double eff_per_tick = (params.max_effort_ - params.min_effort_) / 255;
 
-    result.position = input.gPO * dist_per_tick + params.min_angle_;
-    result.position = std::max(params.min_angle_, std::min(result.position, params.max_angle_));
-    
+    result.position = clip(input.gPO * dist_per_tick + params.min_angle_, params.min_angle_, params.max_angle_);    
     result.effort = input.gCU * eff_per_tick + params.min_effort_;
     result.stalled = input.gOBJ == 0x1 || input.gOBJ == 0x2;
     result.reached_goal = input.gPO == goal_pos;
@@ -110,7 +111,6 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
 
   state_sub_ = nh_.subscribe(gripper_params_.state_topic_, 1, &Robotiq2FGripperActionServer::analysisCB, this);
   goal_pub_ = nh_.advertise<GripperOutput>(gripper_params_.control_topic_, 1);
-
   joint_pub = nh_.advertise<sensor_msgs::JointState>(gripper_params_.joint_states_topic_, 10);
   
   std::vector<double> joint_positions(1);
@@ -171,16 +171,9 @@ void Robotiq2FGripperActionServer::analysisCB(const GripperInput::ConstPtr& msg)
 {
   current_reg_state_ = *msg;
 
-  double dist_per_tick = (gripper_params_.max_angle_ - gripper_params_.min_angle_) / 230;
-  double position = current_reg_state_.gPO * dist_per_tick + gripper_params_.min_angle_;
-  position = std::max(gripper_params_.min_angle_, std::min(position, gripper_params_.max_angle_));
-
-  joint_msg.position.at(0) = position;
-  joint_pub.publish(joint_msg);
+  publishJointStates(msg);
 
   if (!as_.isActive()) return;
-
-  ROS_INFO("Current gSTA state: %d", current_reg_state_.gSTA);
 
   // Check to see if the gripper is in its activated state
   if (current_reg_state_.gSTA != 0x3)
@@ -188,39 +181,44 @@ void Robotiq2FGripperActionServer::analysisCB(const GripperInput::ConstPtr& msg)
     // Check to see if the gripper is active or if it has been asked to be active
     if (current_reg_state_.gSTA == 0x0 && goal_reg_state_.rACT != 0x1)
     {
-      // If it hasn't been asked, active it
       issueActivation();
     }
-
-    // Otherwise wait for the gripper to activate
-    // TODO: If message delivery isn't guaranteed, then we may want to resend activate
     return;
   }
 
-  // Check for errors
-  if (current_reg_state_.gFLT)
+  // check for errors
+  if (current_reg_state_.gFLT) 
   {
     ROS_WARN("%s faulted with code: %x", action_name_.c_str(), current_reg_state_.gFLT);
     as_.setAborted(registerStateToResult(current_reg_state_,
                                          gripper_params_,
                                          goal_reg_state_.rPR));
-  }
-  else if (current_reg_state_.gGTO && current_reg_state_.gOBJ && current_reg_state_.gPR == goal_reg_state_.rPR)
+  } 
+  // If commanded to move and if at a goal state and if the position request matches the echo'd PR, we're done with a move
+  else if (current_reg_state_.gGTO && current_reg_state_.gOBJ && current_reg_state_.gPR == goal_reg_state_.rPR) 
   {
-    // If commanded to move and if at a goal state and if the position request matches the echo'd PR, we're
-    // done with a move
     ROS_INFO("%s succeeded", action_name_.c_str());
     as_.setSucceeded(registerStateToResult(current_reg_state_,
                                            gripper_params_,
                                            goal_reg_state_.rPR));
   }
-  else
+  // Publish feedback
+  else 
   {
-    // Publish feedback
     as_.publishFeedback(registerStateToFeedback(current_reg_state_,
                                                 gripper_params_,
                                                 goal_reg_state_.rPR));
   }
+}
+
+void Robotiq2FGripperActionServer::publishJointStates(const GripperInput::ConstPtr& msg) {
+  current_reg_state_ = *msg;
+
+  double dist_per_tick = (gripper_params_.max_angle_ - gripper_params_.min_angle_) / 230;
+  double position = clip(current_reg_state_.gPO * dist_per_tick + gripper_params_.min_angle_, gripper_params_.min_angle_, gripper_params_.max_angle_);
+
+  joint_msg.position.at(0) = position;
+  joint_pub.publish(joint_msg);
 }
 
 void Robotiq2FGripperActionServer::issueActivation()
@@ -236,7 +234,6 @@ void Robotiq2FGripperActionServer::issueActivation()
   goal_reg_state_ = out;
   goal_pub_.publish(out);
 }
-
 
 void Robotiq2FGripperActionServer::issueReset()
 {
