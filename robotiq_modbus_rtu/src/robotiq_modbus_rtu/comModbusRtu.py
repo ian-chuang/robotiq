@@ -65,7 +65,10 @@ class ComModbusRtu:
       if not self.client.connect():
           print("Unable to connect to {}".format(device))
           return False
-      return True
+
+      success = self.readUntilSuccessful(num_attempts=20)
+      
+      return success
 
    def disconnectFromDevice(self):
       """Close connection"""
@@ -111,3 +114,14 @@ class ComModbusRtu:
 
       #Output the result
       return output
+
+   def readUntilSuccessful(self, num_attempts=20):
+      for i in range(num_attempts):
+         try:
+            self.getStatus(6)
+         except ReadGripperError as e:
+            pass
+         else:
+            return True
+
+      return False

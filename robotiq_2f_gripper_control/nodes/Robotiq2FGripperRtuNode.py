@@ -66,7 +66,11 @@ def mainLoop():
     gripper.client = ComModbusRtu()
 
     # We connect to the address received as an argument
-    gripper.client.connectToDevice(device)
+    success = gripper.client.connectToDevice(device)
+
+    if not success:
+        rospy.logerr("Failed to connect and read from gripper")
+        raise rospy.ROSInterruptException
 
     # The Gripper status is published on the topic named 'Robotiq2FGripperRobotInput'
     pub = rospy.Publisher(state_topic,

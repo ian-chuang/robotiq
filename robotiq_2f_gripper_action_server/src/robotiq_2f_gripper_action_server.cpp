@@ -127,8 +127,7 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
     sleep_t.sleep();
   }
 
-  ros::WallDuration sleep2(3.0); 
-  sleep2.sleep();
+  sleep_t.sleep();
   issueReset();
   
   sleep_t.sleep();
