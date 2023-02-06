@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <launch>
-  <arg name="port" default="/dev/ttyUSB0" />
+  <arg name="port" default="/tmp/ttyUR" />
 
   <node name="robotiq_2f_gripper_action_server" pkg="robotiq_2f_gripper_action_server"
     type="robotiq_2f_gripper_action_server_node" output="screen">

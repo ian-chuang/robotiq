@@ -127,11 +127,13 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
     sleep_t.sleep();
   }
 
+  ros::WallDuration sleep2(3.0); 
+  sleep2.sleep();
   issueReset();
-  sleep_t.sleep();
   
-  issueActivation();
   sleep_t.sleep();
+  issueActivation();
+  
 }
 
 void Robotiq2FGripperActionServer::goalCB()
@@ -217,6 +219,8 @@ void Robotiq2FGripperActionServer::publishJointStates(const GripperInput::ConstP
   double dist_per_tick = (gripper_params_.max_angle_ - gripper_params_.min_angle_) / 230;
   double position = clip(current_reg_state_.gPO * dist_per_tick + gripper_params_.min_angle_, gripper_params_.min_angle_, gripper_params_.max_angle_);
 
+  joint_msg.header.frame_id = "";
+  joint_msg.header.stamp = ros::Time::now();
   joint_msg.position.at(0) = position;
   joint_pub.publish(joint_msg);
 }
