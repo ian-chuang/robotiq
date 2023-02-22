@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:macro name="robotiq_arg2f_85_gazebo" params="prefix">
+
+        <gazebo>
+            <!-- Mimic joints plugin-->
+            <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so"
+                name="${prefix}mimic_robotiq_85_5">
+                <joint>${prefix}finger_joint</joint>
+                <mimicJoint>${prefix}right_finger_joint</mimicJoint>
+                <multiplier>1.0</multiplier>
+                <hasPID />
+            </plugin>
+        </gazebo>
+
+        <xacro:macro name="robotiq_2f_85_gazebo_link_properties" params="reference material">
+            <gazebo reference="${reference}">
+                <material>${material}</material>
+                <kp>1000000.0</kp>
+                <kd>1.0</kd>
+                <mu1>1.16</mu1>
+                <mu2>1.16</mu2>
+                <maxVel>0.0</maxVel>
+                <minDepth>0.001</minDepth>
+            </gazebo>
+        </xacro:macro>
+
+        <!-- Links colors  -->
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}robotiq_85_coupling"
+            material="Gazebo/Black" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}robotiq_arg2f_base_link"
+            material="Gazebo/Black" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}left_outer_knuckle"
+            material="Gazebo/Grey" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}left_outer_finger"
+            material="Gazebo/Black" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}left_inner_finger"
+            material="Gazebo/Grey" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}left_inner_knuckle"
+            material="Gazebo/Black" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}right_outer_knuckle"
+            material="Gazebo/Grey" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}right_outer_finger"
+            material="Gazebo/Black" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}right_inner_finger"
+            material="Gazebo/Grey" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}right_inner_knuckle"
+            material="Gazebo/Black" />
+
+        <xacro:macro name="robotiq_2f_85_gazebo_joint_properties" params="reference">
+            <gazebo reference="${reference}">
+                <implicitSpringDamper>true</implicitSpringDamper>
+            </gazebo>
+        </xacro:macro>
+
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}finger_joint" />
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}left_outer_finger_joint" />
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}left_inner_knuckle_joint" />
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}left_inner_finger_joint" />
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}right_finger_joint" />
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}right_outer_finger_joint" />
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}right_inner_knuckle_joint" />
+        <xacro:robotiq_2f_85_gazebo_joint_properties reference="${prefix}right_inner_finger_joint" />
+
+    </xacro:macro>
+
+</robot>
