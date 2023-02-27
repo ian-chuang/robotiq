@@ -26,9 +26,11 @@
         </xacro:macro>
 
         <!-- Links colors  -->
-        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}robotiq_85_coupling"
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}coupler"
             material="Gazebo/Black" />
-        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}robotiq_arg2f_base_link"
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}cable_protector"
+            material="Gazebo/Black" />
+        <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}gripper_body"
             material="Gazebo/Black" />
         <xacro:robotiq_2f_85_gazebo_link_properties reference="${prefix}left_outer_knuckle"
             material="Gazebo/Grey" />

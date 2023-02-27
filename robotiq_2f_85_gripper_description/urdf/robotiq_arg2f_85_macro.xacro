@@ -5,7 +5,7 @@
   <xacro:include filename="$(find robotiq_2f_85_gripper_description)/urdf/inc/robotiq_arg2f_85_gazebo.xacro" />
 
   <xacro:macro name="robotiq_arg2f_85" params="
-    prefix transmission_hw_interface:=hardware/interface/EffortJointInterface">
+    prefix transmission_hw_interface:=hardware/interface/EffortJointInterface parent *origin">
     <!-- Add URDF transmission elements (for ros_control) -->
     <xacro:robotiq_arg2f_85_transmission prefix="${prefix}" hw_interface="${transmission_hw_interface}"/>
     <xacro:robotiq_arg2f_85_gazebo prefix="${prefix}" />
@@ -178,7 +178,7 @@
       <joint name="${prefix}${fingerprefix}_inner_knuckle_joint" type="revolute">
         <!-- <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="${pi / 2 + .725} 0 ${(reflect - 1) * pi / 2}" /> -->
         <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="0 0 ${(1 + reflect) * pi / 2}"/>
-        <parent link="${prefix}robotiq_arg2f_base_link" />
+        <parent link="${prefix}gripper_body" />
         <child link="${prefix}${fingerprefix}_inner_knuckle" />
         <axis xyz="1 0 0" />
         <limit lower="0" upper="0.8757" velocity="${max_velocity}" effort="${max_effort}" />
@@ -231,7 +231,64 @@
     </xacro:macro>
 
     <!-- base link -->
-    <link name="${prefix}robotiq_arg2f_base_link">
+
+    <link name="${prefix}coupler">
+      <inertial>
+        <origin xyz="-0.0016434089410331007 -0.0004181643687079058 ${-0.005581211139100582+0.011}" rpy="0 0 0"/>
+        <mass value="${0.2723365896184866*0.37150924577}"/>
+        <inertia ixx="${0.000118*0.37150924577}" iyy="${0.000124*0.37150924577}" izz="${0.000233*0.37150924577}" ixy="${1e-06*0.37150924577}" iyz="${1e-06*0.37150924577}" ixz="${0.0*0.37150924577}"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0.011" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_coupler.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="">
+          <color rgba="0.1 0.1 0.1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.011" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_coupler.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}coupler_joint" type="fixed">
+      <parent link="${parent}" />
+      <child link="${prefix}coupler" />
+      <xacro:insert_block name="origin" />
+    </joint>
+    
+    <link name="${prefix}cable_protector">
+      <inertial>
+        <origin xyz="0.010499202658401787 0.011330121945009958 -0.02060409858103498" rpy="0 0 0"/>
+        <mass value="${0.08442848239639232*.1}"/>
+        <inertia ixx="${2.4e-05*.1}" iyy="${3.1e-05*.1}" izz="${1.2e-05*.1}" ixy="${0.0*.1}" iyz="${2e-06*.1}" ixz="${0.0*.1}"/>
+      </inertial>
+      <visual>
+        <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="">
+          <color rgba="0.1 0.1 0.1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${prefix}cable_protector_joint" type="fixed">
+      <origin xyz="-0.0105 0.034 ${0.011-0.008}" rpy="0 0 0"/>
+      <parent link="${prefix}coupler"/>
+      <child link="${prefix}cable_protector"/>
+    </joint>
+    
+    <link name="${prefix}gripper_body">
       <inertial>
         <!-- <origin xyz="8.625E-08 -4.6583E-06 0.03145" rpy="0 0 0" />
           <mass value="0.22652" />
@@ -243,7 +300,7 @@
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_base_link.stl" />
+          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_gripper_body.stl" />
         </geometry>
         <material name="">
           <color rgba="0.1 0.1 0.1 1" />
@@ -252,17 +309,23 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_base_link.stl" />
+          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_gripper_body.stl" />
         </geometry>
       </collision>
     </link>
+    <joint name="${prefix}gripper_body_joint" type="fixed">
+      <origin xyz="0 0 0.011" rpy="0 0 ${-pi/2}"/>
+      <parent link="${prefix}coupler"/>
+      <child link="${prefix}gripper_body"/>
+    </joint>
+    
 
     <!-- left finger -->
     <xacro:finger_links prefix="${prefix}" fingerprefix="left"/>
     <xacro:finger_joints prefix="${prefix}" fingerprefix="left" reflect="1.0"/>
     <joint name="${prefix}finger_joint" type="revolute">
       <origin xyz="0 -0.0306011 0.054904" rpy="0 0 ${pi}"/>
-      <parent link="${prefix}robotiq_arg2f_base_link" />
+      <parent link="${prefix}gripper_body" />
       <child link="${prefix}left_outer_knuckle" />
       <axis xyz="1 0 0" />
       <limit lower="0" upper="0.8" velocity="${max_velocity}" effort="${max_effort}" />
@@ -273,7 +336,7 @@
     <xacro:finger_links prefix="${prefix}" fingerprefix="right"/>
     <joint name="${prefix}right_finger_joint" type="revolute">
       <origin xyz="0 0.0306011 0.054904" rpy="0 0 0"/>
-      <parent link="${prefix}robotiq_arg2f_base_link" />
+      <parent link="${prefix}gripper_body" />
       <child link="${prefix}right_outer_knuckle" />
       <axis xyz="1 0 0" />
       <limit lower="0" upper="0.81" velocity="${max_velocity}" effort="${max_effort}" />

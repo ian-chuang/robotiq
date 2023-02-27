@@ -6,8 +6,14 @@
   <!-- parameters -->
   <xacro:arg name="transmission_hw_interface" default="hardware_interface/EffortJointInterface"/>
 
+  <link name="world"/>
+
   <!-- gripper -->
   <xacro:robotiq_arg2f_85 
     prefix=""
-    transmission_hw_interface="$(arg transmission_hw_interface)"/>
+    transmission_hw_interface="$(arg transmission_hw_interface)"
+    parent="world"
+  >
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </xacro:robotiq_arg2f_85>
 </robot>
