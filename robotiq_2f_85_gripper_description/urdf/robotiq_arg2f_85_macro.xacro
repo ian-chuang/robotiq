@@ -5,7 +5,7 @@
   <xacro:include filename="$(find robotiq_2f_85_gripper_description)/urdf/inc/robotiq_arg2f_85_gazebo.xacro" />
 
   <xacro:macro name="robotiq_arg2f_85" params="
-    prefix transmission_hw_interface:=hardware/interface/EffortJointInterface parent *origin">
+    prefix transmission_hw_interface:=hardware/interface/EffortJointInterface parent *origin add_cable_protector:=true">
     <!-- Add URDF transmission elements (for ros_control) -->
     <xacro:robotiq_arg2f_85_transmission prefix="${prefix}" hw_interface="${transmission_hw_interface}"/>
     <xacro:robotiq_arg2f_85_gazebo prefix="${prefix}" />
@@ -260,33 +260,35 @@
       <xacro:insert_block name="origin" />
     </joint>
     
-    <link name="${prefix}cable_protector">
-      <inertial>
-        <origin xyz="0.010499202658401787 0.011330121945009958 -0.02060409858103498" rpy="0 0 0"/>
-        <mass value="${0.08442848239639232*.1}"/>
-        <inertia ixx="${2.4e-05*.1}" iyy="${3.1e-05*.1}" izz="${1.2e-05*.1}" ixy="${0.0*.1}" iyz="${2e-06*.1}" ixz="${0.0*.1}"/>
-      </inertial>
-      <visual>
-        <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
-        </geometry>
-        <material name="">
-          <color rgba="0.1 0.1 0.1 1" />
-        </material>
-      </visual>
-      <collision>
-        <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
-        <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
-        </geometry>
-      </collision>
-    </link>
-    <joint name="${prefix}cable_protector_joint" type="fixed">
-      <origin xyz="-0.0105 0.034 ${0.011-0.008}" rpy="0 0 0"/>
-      <parent link="${prefix}coupler"/>
-      <child link="${prefix}cable_protector"/>
-    </joint>
+    <xacro:if value="${add_cable_protector}">
+      <link name="${prefix}cable_protector">
+        <inertial>
+          <origin xyz="0.010499202658401787 0.011330121945009958 -0.02060409858103498" rpy="0 0 0"/>
+          <mass value="${0.08442848239639232*.1}"/>
+          <inertia ixx="${2.4e-05*.1}" iyy="${3.1e-05*.1}" izz="${1.2e-05*.1}" ixy="${0.0*.1}" iyz="${2e-06*.1}" ixz="${0.0*.1}"/>
+        </inertial>
+        <visual>
+          <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
+          </geometry>
+          <material name="">
+            <color rgba="0.1 0.1 0.1 1" />
+          </material>
+        </visual>
+        <collision>
+          <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
+          </geometry>
+        </collision>
+      </link>
+      <joint name="${prefix}cable_protector_joint" type="fixed">
+        <origin xyz="-0.0105 0.034 ${0.011-0.008}" rpy="0 0 0"/>
+        <parent link="${prefix}coupler"/>
+        <child link="${prefix}cable_protector"/>
+      </joint>
+    </xacro:if>
     
     <link name="${prefix}gripper_body">
       <inertial>
