@@ -1,34 +1,44 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find robotiq_2f_85_gripper_description)/urdf/inc/robotiq_arg2f_85_transmissions.xacro" />
-  <xacro:include filename="$(find robotiq_2f_85_gripper_description)/urdf/inc/robotiq_arg2f_85_gazebo.xacro" />
+  <xacro:include
+    filename="$(find robotiq_2f_85_gripper_description)/urdf/inc/robotiq_arg2f_85_transmissions.xacro" />
+  <xacro:include
+    filename="$(find robotiq_2f_85_gripper_description)/urdf/inc/robotiq_arg2f_85_gazebo.xacro" />
 
-  <xacro:macro name="robotiq_arg2f_85" params="
+  <xacro:macro name="robotiq_arg2f_85"
+    params="
     prefix transmission_hw_interface:=hardware/interface/EffortJointInterface parent *origin add_cable_protector:=true">
     <!-- Add URDF transmission elements (for ros_control) -->
-    <xacro:robotiq_arg2f_85_transmission prefix="${prefix}" hw_interface="${transmission_hw_interface}"/>
+    <xacro:robotiq_arg2f_85_transmission prefix="${prefix}"
+      hw_interface="${transmission_hw_interface}" />
     <xacro:robotiq_arg2f_85_gazebo prefix="${prefix}" />
 
     <xacro:property name="max_effort" value="100.0" />
     <xacro:property name="max_velocity" value="2.0" />
-    <xacro:property name="finger_mass_scale" value="3.0" />  <!-- The fingers shake if they don't weigh enough -->
+    <xacro:property name="finger_mass_scale" value="3.0" />  <!-- The fingers shake if they don't
+    weigh enough -->
 
     <!-- fingers links macros -->
     <xacro:macro name="outer_knuckle" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_outer_knuckle">
         <inertial>
-          <!-- <origin xyz="-0.000200000000003065 0.0199435877845359 0.0292245259211331" rpy="0 0 0" />
+          <!-- <origin xyz="-0.000200000000003065 0.0199435877845359 0.0292245259211331" rpy="0 0 0"
+          />
           <mass value="0.00853198276973456" />
-          <inertia ixx="2.89328108496468E-06" ixy="-1.57935047237397E-19" ixz="-1.93980378593255E-19" iyy="1.86719750325683E-06" iyz="-1.21858577871576E-06" izz="1.21905238907251E-06" /> -->
-          <origin xyz="-9.37041302356095e-12 0.01793673167077561 0.0009235341802113242" rpy="0 0 0"/>
-          <mass value="${0.018476648450763997 * finger_mass_scale}"/>
-          <inertia ixx="${4e-06 * finger_mass_scale}" iyy="${1e-06 * finger_mass_scale}" izz="${3e-06 * finger_mass_scale}" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+          <inertia ixx="2.89328108496468E-06" ixy="-1.57935047237397E-19" ixz="-1.93980378593255E-19"
+          iyy="1.86719750325683E-06" iyz="-1.21858577871576E-06" izz="1.21905238907251E-06" /> -->
+          <origin xyz="-9.37041302356095e-12 0.01793673167077561 0.0009235341802113242" rpy="0 0 0" />
+          <mass value="${0.018476648450763997 * finger_mass_scale}" />
+          <inertia ixx="${4e-06 * finger_mass_scale}" iyy="${1e-06 * finger_mass_scale}"
+            izz="${3e-06 * finger_mass_scale}" ixy="0.0" iyz="-0.0" ixz="0.0" />
         </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_outer_knuckle.dae" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_outer_knuckle.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
           <material name="">
             <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
@@ -37,7 +47,9 @@
         <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_outer_knuckle.dae" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_outer_knuckle.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
         </collision>
       </link>
@@ -46,17 +58,23 @@
     <xacro:macro name="outer_finger" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_outer_finger">
         <inertial>
-          <!-- <origin xyz="0.00030115855001899 0.0373907951953854 -0.0208027427000385" rpy="0 0 0" />
+          <!-- <origin xyz="0.00030115855001899 0.0373907951953854 -0.0208027427000385" rpy="0 0 0"
+          />
           <mass value="0.022614240507152" />
-          <inertia ixx="1.52518312458174E-05" ixy="9.76583423954399E-10" ixz="-5.43838577022588E-10" iyy="6.17694243867776E-06" iyz="6.78636130740228E-06" izz="1.16494917907219E-05" /> -->
-          <origin xyz="-2.381768015458948e-12 0.00277667011824432 0.021399053905477743" rpy="0 0 0"/>
-          <mass value="${0.02729659380694228 * finger_mass_scale}"/>
-          <inertia ixx="${7e-06 * finger_mass_scale}" iyy="${8e-06 * finger_mass_scale}" izz="${2e-06 * finger_mass_scale}" ixy="0.0" iyz="${-1e-06 * finger_mass_scale}" ixz="0.0"/>
+          <inertia ixx="1.52518312458174E-05" ixy="9.76583423954399E-10" ixz="-5.43838577022588E-10"
+          iyy="6.17694243867776E-06" iyz="6.78636130740228E-06" izz="1.16494917907219E-05" /> -->
+          <origin xyz="-2.381768015458948e-12 0.00277667011824432 0.021399053905477743" rpy="0 0 0" />
+          <mass value="${0.02729659380694228 * finger_mass_scale}" />
+          <inertia ixx="${7e-06 * finger_mass_scale}" iyy="${8e-06 * finger_mass_scale}"
+            izz="${2e-06 * finger_mass_scale}" ixy="0.0" iyz="${-1e-06 * finger_mass_scale}"
+            ixz="0.0" />
         </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_outer_finger.dae" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_outer_finger.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
           <material name="">
             <color rgba="0.1 0.1 0.1 1" />
@@ -65,7 +83,9 @@
         <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_outer_finger.dae" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_outer_finger.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
         </collision>
       </link>
@@ -74,17 +94,23 @@
     <xacro:macro name="inner_knuckle" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_inner_knuckle">
         <inertial>
-          <!-- <origin xyz="0.000123011831763771 0.0507850843201817 0.00103968640075166" rpy="0 0 0" />
+          <!-- <origin xyz="0.000123011831763771 0.0507850843201817 0.00103968640075166" rpy="0 0 0"
+          />
           <mass value="0.0271177346495152" />
-          <inertia ixx="2.61910379223783E-05" ixy="-2.43616858946494E-07" ixz="-6.37789906117123E-09" iyy="2.8270243746167E-06" iyz="-5.37200748039765E-07" izz="2.83695868220296E-05" /> -->
-          <origin xyz="-5.434135948284727e-09 0.018348857047576116 0.02148375395505462" rpy="0 0 0"/>
-          <mass value="${0.029949543712543904 * finger_mass_scale}"/>
-          <inertia ixx="${1.1e-05 * finger_mass_scale}" iyy="${1.1e-05 * finger_mass_scale}" izz="${9e-06 * finger_mass_scale}" ixy="0.0" iyz="${-5e-06 * finger_mass_scale}" ixz="-0.0"/>
+          <inertia ixx="2.61910379223783E-05" ixy="-2.43616858946494E-07" ixz="-6.37789906117123E-09"
+          iyy="2.8270243746167E-06" iyz="-5.37200748039765E-07" izz="2.83695868220296E-05" /> -->
+          <origin xyz="-5.434135948284727e-09 0.018348857047576116 0.02148375395505462" rpy="0 0 0" />
+          <mass value="${0.029949543712543904 * finger_mass_scale}" />
+          <inertia ixx="${1.1e-05 * finger_mass_scale}" iyy="${1.1e-05 * finger_mass_scale}"
+            izz="${9e-06 * finger_mass_scale}" ixy="0.0" iyz="${-5e-06 * finger_mass_scale}"
+            ixz="-0.0" />
         </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_inner_knuckle.dae" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_inner_knuckle.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
           <material name="">
             <color rgba="0.1 0.1 0.1 1" />
@@ -93,7 +119,9 @@
         <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_inner_knuckle.dae" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_inner_knuckle.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
         </collision>
       </link>
@@ -102,17 +130,23 @@
     <xacro:macro name="inner_finger" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_inner_finger">
         <inertial>
-          <!-- <origin xyz="0.000299999999999317 0.0160078233491243 -0.0136945669206257" rpy="0 0 0" />
+          <!-- <origin xyz="0.000299999999999317 0.0160078233491243 -0.0136945669206257" rpy="0 0 0"
+          />
           <mass value="0.0104003125914103" />
-          <inertia ixx="2.71909453810972E-06" ixy="1.35402465472579E-21" ixz="-7.1817349065269E-22" iyy="7.69100314106116E-07" iyz="6.74715432769696E-07" izz="2.30315190420171E-06" /> -->
-          <origin xyz="5.39621183048144e-08 -0.011873888098226633 0.013214451657752282" rpy="0 0 0"/>
-          <mass value="${0.01957844415989899 * finger_mass_scale}"/>
-          <inertia ixx="${5e-06 * finger_mass_scale}" iyy="${4e-06 * finger_mass_scale}" izz="${1e-06 * finger_mass_scale}" ixy="${-0.0 * finger_mass_scale}" iyz="${1e-06 * finger_mass_scale}" ixz="0.0"/>
+          <inertia ixx="2.71909453810972E-06" ixy="1.35402465472579E-21" ixz="-7.1817349065269E-22"
+          iyy="7.69100314106116E-07" iyz="6.74715432769696E-07" izz="2.30315190420171E-06" /> -->
+          <origin xyz="5.39621183048144e-08 -0.011873888098226633 0.013214451657752282" rpy="0 0 0" />
+          <mass value="${0.01957844415989899 * finger_mass_scale}" />
+          <inertia ixx="${5e-06 * finger_mass_scale}" iyy="${4e-06 * finger_mass_scale}"
+            izz="${1e-06 * finger_mass_scale}" ixy="${-0.0 * finger_mass_scale}"
+            iyz="${1e-06 * finger_mass_scale}" ixz="0.0" />
         </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_inner_finger.dae" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_inner_finger.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
           <material name="">
             <color rgba="0.1 0.1 0.1 1" />
@@ -121,7 +155,9 @@
         <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_inner_finger.dae" scale="0.001 0.001 0.001" />
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_inner_finger.dae"
+              scale="0.001 0.001 0.001" />
           </geometry>
         </collision>
       </link>
@@ -131,14 +167,15 @@
     <xacro:macro name="inner_finger_pad" params="prefix fingerprefix">
       <link name="${prefix}${fingerprefix}_inner_finger_pad">
         <inertial>
-          <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
-          <mass value="${0.014144625000000003 * finger_mass_scale}"/>
-          <inertia ixx="${2e-06 * finger_mass_scale}" iyy="${2e-06 * finger_mass_scale}" izz="${1e-06 * finger_mass_scale}" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+          <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+          <mass value="${0.014144625000000003 * finger_mass_scale}" />
+          <inertia ixx="${2e-06 * finger_mass_scale}" iyy="${2e-06 * finger_mass_scale}"
+            izz="${1e-06 * finger_mass_scale}" ixy="-0.0" iyz="0.0" ixz="0.0" />
         </inertial>
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <box size="0.022 0.00635 0.0375"/>
+            <box size="0.022 0.00635 0.0375" />
           </geometry>
           <material name="">
             <color rgba="0.9 0.9 0.9 1" />
@@ -147,7 +184,7 @@
         <collision>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <box size="0.022 0.00635 0.0375"/>
+            <box size="0.022 0.00635 0.0375" />
           </geometry>
           <material name="">
             <color rgba="0.9 0.0 0.0 1" />
@@ -157,17 +194,17 @@
     </xacro:macro>
 
     <xacro:macro name="finger_links" params="prefix fingerprefix">
-      <xacro:outer_knuckle prefix="${prefix}" fingerprefix="${fingerprefix}"/>
-      <xacro:outer_finger prefix="${prefix}" fingerprefix="${fingerprefix}"/>
-      <xacro:inner_finger prefix="${prefix}" fingerprefix="${fingerprefix}"/>
-      <xacro:inner_finger_pad prefix="${prefix}" fingerprefix="${fingerprefix}"/>
-      <xacro:inner_knuckle prefix="${prefix}" fingerprefix="${fingerprefix}"/>
+      <xacro:outer_knuckle prefix="${prefix}" fingerprefix="${fingerprefix}" />
+      <xacro:outer_finger prefix="${prefix}" fingerprefix="${fingerprefix}" />
+      <xacro:inner_finger prefix="${prefix}" fingerprefix="${fingerprefix}" />
+      <xacro:inner_finger_pad prefix="${prefix}" fingerprefix="${fingerprefix}" />
+      <xacro:inner_knuckle prefix="${prefix}" fingerprefix="${fingerprefix}" />
     </xacro:macro>
 
     <!-- fingers joints macros -->
     <xacro:macro name="outer_finger_joint" params="prefix fingerprefix">
       <joint name="${prefix}${fingerprefix}_outer_finger_joint" type="fixed">
-        <origin xyz="0 0.0315 -0.0041" rpy="0 0 0"/>
+        <origin xyz="0 0.0315 -0.0041" rpy="0 0 0" />
         <parent link="${prefix}${fingerprefix}_outer_knuckle" />
         <child link="${prefix}${fingerprefix}_outer_finger" />
         <axis xyz="1 0 0" />
@@ -176,8 +213,9 @@
 
     <xacro:macro name="inner_knuckle_joint" params="prefix fingerprefix reflect">
       <joint name="${prefix}${fingerprefix}_inner_knuckle_joint" type="revolute">
-        <!-- <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="${pi / 2 + .725} 0 ${(reflect - 1) * pi / 2}" /> -->
-        <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="0 0 ${(1 + reflect) * pi / 2}"/>
+        <!-- <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="${pi / 2 + .725} 0 ${(reflect - 1) *
+        pi / 2}" /> -->
+        <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="0 0 ${(1 + reflect) * pi / 2}" />
         <parent link="${prefix}gripper_body" />
         <child link="${prefix}${fingerprefix}_inner_knuckle" />
         <axis xyz="1 0 0" />
@@ -188,7 +226,7 @@
 
     <xacro:macro name="inner_finger_joint" params="prefix fingerprefix">
       <joint name="${prefix}${fingerprefix}_inner_finger_joint" type="revolute">
-        <origin xyz="0 0.0061 0.0471" rpy="0 0 0"/>
+        <origin xyz="0 0.0061 0.0471" rpy="0 0 0" />
         <parent link="${prefix}${fingerprefix}_outer_finger" />
         <child link="${prefix}${fingerprefix}_inner_finger" />
         <axis xyz="1 0 0" />
@@ -215,7 +253,7 @@
 
     <xacro:macro name="inner_finger_pad_joint" params="prefix fingerprefix">
       <joint name="${prefix}${fingerprefix}_inner_finger_pad_joint" type="fixed">
-        <origin xyz="0 -0.0220203446692936 0.03242" rpy="0 0 0"/>
+        <origin xyz="0 -0.0220203446692936 0.03242" rpy="0 0 0" />
         <parent link="${prefix}${fingerprefix}_inner_finger" />
         <child link="${prefix}${fingerprefix}_inner_finger_pad" />
         <axis xyz="0 0 1" />
@@ -223,34 +261,42 @@
     </xacro:macro>
 
     <xacro:macro name="finger_joints" params="prefix fingerprefix reflect">
-      <xacro:outer_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}"/>
-      <xacro:inner_knuckle_joint prefix="${prefix}" fingerprefix="${fingerprefix}" reflect="${reflect}"/>
-      <xacro:inner_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}"/>
+      <xacro:outer_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}" />
+      <xacro:inner_knuckle_joint prefix="${prefix}" fingerprefix="${fingerprefix}"
+        reflect="${reflect}" />
+      <xacro:inner_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}" />
       <xacro:inner_knuckle_to_inner_finger_joint prefix="${prefix}" fingerprefix="${fingerprefix}" />
-      <xacro:inner_finger_pad_joint prefix="${prefix}" fingerprefix="${fingerprefix}"/>
+      <xacro:inner_finger_pad_joint prefix="${prefix}" fingerprefix="${fingerprefix}" />
     </xacro:macro>
 
     <!-- base link -->
 
     <link name="${prefix}coupler">
       <inertial>
-        <origin xyz="-0.0016434089410331007 -0.0004181643687079058 ${-0.005581211139100582+0.011}" rpy="0 0 0"/>
-        <mass value="${0.2723365896184866*0.37150924577}"/>
-        <inertia ixx="${0.000118*0.37150924577}" iyy="${0.000124*0.37150924577}" izz="${0.000233*0.37150924577}" ixy="${1e-06*0.37150924577}" iyz="${1e-06*0.37150924577}" ixz="${0.0*0.37150924577}"/>
+        <origin xyz="-0.0016434089410331007 -0.0004181643687079058 ${-0.005581211139100582+0.011}"
+          rpy="0 0 0" />
+        <mass value="${0.2723365896184866*0.37150924577}" />
+        <inertia ixx="${0.000118*0.37150924577}" iyy="${0.000124*0.37150924577}"
+          izz="${0.000233*0.37150924577}" ixy="${1e-06*0.37150924577}" iyz="${1e-06*0.37150924577}"
+          ixz="${0.0*0.37150924577}" />
       </inertial>
       <visual>
-        <origin xyz="0 0 0.011" rpy="0 0 0"/>
+        <origin xyz="0 0 0.011" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_coupler.stl" scale="0.001 0.001 0.001"/>
+          <mesh
+            filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_coupler.stl"
+            scale="0.001 0.001 0.001" />
         </geometry>
         <material name="">
           <color rgba="0.1 0.1 0.1 1" />
         </material>
       </visual>
       <collision>
-        <origin xyz="0 0 0.011" rpy="0 0 0"/>
+        <origin xyz="0 0 0.011" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_coupler.stl" scale="0.001 0.001 0.001"/>
+          <mesh
+            filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_coupler.stl"
+            scale="0.001 0.001 0.001" />
         </geometry>
       </collision>
     </link>
@@ -259,50 +305,58 @@
       <child link="${prefix}coupler" />
       <xacro:insert_block name="origin" />
     </joint>
-    
+
     <xacro:if value="${add_cable_protector}">
       <link name="${prefix}cable_protector">
         <inertial>
-          <origin xyz="0.010499202658401787 0.011330121945009958 -0.02060409858103498" rpy="0 0 0"/>
-          <mass value="${0.08442848239639232*.1}"/>
-          <inertia ixx="${2.4e-05*.1}" iyy="${3.1e-05*.1}" izz="${1.2e-05*.1}" ixy="${0.0*.1}" iyz="${2e-06*.1}" ixz="${0.0*.1}"/>
+          <origin xyz="0.010499078826396276 0.011473161325063826 -0.026205571104648606" rpy="0 0 0" />
+          <mass value="0.013386670447320692" />
+          <inertia ixx="6e-06" iyy="7e-06" izz="2e-06" ixy="0.0" iyz="0.0" ixz="0.0" />
         </inertial>
         <visual>
-          <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
+          <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_cable_protector.stl"
+              scale="0.001 0.001 0.001" />
           </geometry>
           <material name="">
             <color rgba="0.1 0.1 0.1 1" />
           </material>
         </visual>
         <collision>
-          <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0"/>
+          <origin xyz="0.0105 -0.034 0.008" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_cable_protector.stl" scale="0.001 0.001 0.001"/>
+            <mesh
+              filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_cable_protector.stl"
+              scale="0.001 0.001 0.001" />
           </geometry>
         </collision>
       </link>
       <joint name="${prefix}cable_protector_joint" type="fixed">
-        <origin xyz="-0.0105 0.034 ${0.011-0.008}" rpy="0 0 0"/>
-        <parent link="${prefix}coupler"/>
-        <child link="${prefix}cable_protector"/>
+        <origin xyz="-0.0105 0.034 ${0.011-0.008}" rpy="0 0 0" />
+        <parent link="${prefix}coupler" />
+        <child link="${prefix}cable_protector" />
       </joint>
     </xacro:if>
-    
+
     <link name="${prefix}gripper_body">
       <inertial>
         <!-- <origin xyz="8.625E-08 -4.6583E-06 0.03145" rpy="0 0 0" />
           <mass value="0.22652" />
-          <inertia ixx="0.00020005" ixy="-4.2442E-10" ixz="-2.9069E-10" iyy="0.00017832" iyz="-3.4402E-08" izz="0.00013478" /> -->
-        <origin xyz="-5.185718748549181e-07 -3.2365468532620426e-06 0.031457950869623615" rpy="0 0 0"/>
-        <mass value="${0.6097291052030527*0.37150924577}"/>
-        <inertia ixx="${0.000537*0.37150924577}" iyy="${0.000479*0.37150924577}" izz="${0.000361*0.37150924577}" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+          <inertia ixx="0.00020005" ixy="-4.2442E-10" ixz="-2.9069E-10" iyy="0.00017832" iyz="-3.4402E-08"
+        izz="0.00013478" /> -->
+        <origin xyz="-5.185718748549181e-07 -3.2365468532620426e-06 0.031457950869623615"
+          rpy="0 0 0" />
+        <mass value="${0.6097291052030527*0.37150924577}" />
+        <inertia ixx="${0.000537*0.37150924577}" iyy="${0.000479*0.37150924577}"
+          izz="${0.000361*0.37150924577}" ixy="0.0" iyz="-0.0" ixz="0.0" />
       </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_gripper_body.stl" />
+          <mesh
+            filename="package://robotiq_2f_85_gripper_description/meshes/visual/robotiq_arg2f_85_gripper_body.stl" />
         </geometry>
         <material name="">
           <color rgba="0.1 0.1 0.1 1" />
@@ -311,22 +365,23 @@
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0" />
         <geometry>
-          <mesh filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_gripper_body.stl" />
+          <mesh
+            filename="package://robotiq_2f_85_gripper_description/meshes/collision/robotiq_arg2f_85_gripper_body.stl" />
         </geometry>
       </collision>
     </link>
     <joint name="${prefix}gripper_body_joint" type="fixed">
-      <origin xyz="0 0 0.011" rpy="0 0 ${-pi/2}"/>
-      <parent link="${prefix}coupler"/>
-      <child link="${prefix}gripper_body"/>
+      <origin xyz="0 0 0.011" rpy="0 0 ${-pi/2}" />
+      <parent link="${prefix}coupler" />
+      <child link="${prefix}gripper_body" />
     </joint>
-    
+
 
     <!-- left finger -->
-    <xacro:finger_links prefix="${prefix}" fingerprefix="left"/>
-    <xacro:finger_joints prefix="${prefix}" fingerprefix="left" reflect="1.0"/>
+    <xacro:finger_links prefix="${prefix}" fingerprefix="left" />
+    <xacro:finger_joints prefix="${prefix}" fingerprefix="left" reflect="1.0" />
     <joint name="${prefix}finger_joint" type="revolute">
-      <origin xyz="0 -0.0306011 0.054904" rpy="0 0 ${pi}"/>
+      <origin xyz="0 -0.0306011 0.054904" rpy="0 0 ${pi}" />
       <parent link="${prefix}gripper_body" />
       <child link="${prefix}left_outer_knuckle" />
       <axis xyz="1 0 0" />
@@ -334,10 +389,10 @@
     </joint>
 
     <!-- right finger -->
-    <xacro:finger_joints prefix="${prefix}" fingerprefix="right" reflect="-1.0"/>
-    <xacro:finger_links prefix="${prefix}" fingerprefix="right"/>
+    <xacro:finger_joints prefix="${prefix}" fingerprefix="right" reflect="-1.0" />
+    <xacro:finger_links prefix="${prefix}" fingerprefix="right" />
     <joint name="${prefix}right_finger_joint" type="revolute">
-      <origin xyz="0 0.0306011 0.054904" rpy="0 0 0"/>
+      <origin xyz="0 0.0306011 0.054904" rpy="0 0 0" />
       <parent link="${prefix}gripper_body" />
       <child link="${prefix}right_outer_knuckle" />
       <axis xyz="1 0 0" />
