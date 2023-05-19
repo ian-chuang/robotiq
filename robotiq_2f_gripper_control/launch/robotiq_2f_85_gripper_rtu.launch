@@ -9,7 +9,7 @@
     <param name="min_gap" type="double" value="0.0" />
     <param name="max_gap" type="double" value="0.8" />
     <param name="min_effort" type="double" value="20.0" />
-    <param name="max_effort" type="double" value="100.0" />
+    <param name="max_effort" type="double" value="285.0" />
     <param name="default_effort" type="double" value="100.0"/>
     <param name="action_server_name" type="str" value="gripper_controller/gripper_cmd" />
     <param name="control_topic" type="str" value="robotiq_2f_85_gripper/control" />
