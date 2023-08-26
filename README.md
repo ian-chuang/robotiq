@@ -1,45 +1,72 @@
-# Robotiq
+## Robotiq ROS Driver for 2F-85 Gripper
 
-## Status
+This repository provides the ROS driver for controlling the Robotiq 2F-85 Gripper. The package includes the URDF model of the 2F-85 Gripper with Gazebo support. Additionally, it features a Gripper Action Server that can be easily utilized by MoveIt to control the gripper.
 
-As of 2021-05-28, it would appear this repository is ***unmaintained***.
+This repository is a fork of the original [jr-robotics/robotiq](https://github.com/jr-robotics/robotiq) repository. Only the necessary packages for the 2F-85 Gripper have been retained and modified, while support for the 2F-140 and 3F grippers has been removed.
 
-Robotiq is not maintaining the packages in this repository and the last active maintainer ([jproberge](https://github.com/jproberge)) does not appear to be active any more.
+![Robotiq Real](media/robotiq_real.gif)
 
-The ROS-Industrial consortia are not involved: for historical reasons, the `robotiq` repository is hosted on the `ros-industrial` Github organisation, but there is no direct link with any of the other repositories there.
+### Features
 
-Please direct support requests to [dof.robotiq.com](https://dof.robotiq.com/). The tracker here is not monitored by Robotiq employees.
+- Added I/O coupling to the gripper URDF.
+- The gripper URDF includes an optional cable protector that is compatible with I/O coupling.
+- Gazebo support for the gripper URDF with correct 4-bar linkage on both fingers and mimic joint plugin.
+- Fixed minor bugs and errors in the action server and Modbus RTU from the original fork to ensure proper functionality with the real gripper.
 
+![Robotiq Gazebo](media/robotiq_gazebo.gif)
 
-## ROS Distro Support
+### Compatibility
 
-|         | Indigo | Jade | Kinetic | Melodic |
-|:-------:|:------:|:----:|:-------:|:-------:|
-| Branch  | [`indigo-devel`](https://github.com/ros-industrial/robotiq/tree/indigo-devel) | [`jade-devel`](https://github.com/ros-industrial/robotiq/tree/jade-devel) | [`kinetic-devel`](https://github.com/ros-industrial/robotiq/tree/kinetic-devel) | [`kinetic-devel`](https://github.com/ros-industrial/robotiq/tree/kinetic-devel) |)
-| Status  |  supported | not supported |  supported |  supported |
-| Version | [version](http://repositories.ros.org/status_page/ros_indigo_default.html?q=robotiq) | [version](http://repositories.ros.org/status_page/ros_jade_default.html?q=robotiq) | [version](http://repositories.ros.org/status_page/ros_kinetic_default.html?q=robotiq) | [version](http://repositories.ros.org/status_page/ros_melodic_default.html?q=robotiq) |
+This driver has only been tested on ROS Noetic.
 
-## Travis - Continuous Integration
+### Installation
 
-Status: [![Build Status](https://travis-ci.com/ros-industrial/robotiq.svg?branch=kinetic-devel)](https://travis-ci.com/ros-industrial/robotiq)
+To get started, follow these steps:
 
-## ROS Buildfarm
+1. Install the main Python dependency, pymodbus version 2.1.0, using the following command:
 
-There are no up-to-date releases of these packages available from the ROS buildfarm.
+    ```
+    pip3 install pymodbus===2.1.0
+    ```
 
-[![support level: community](https://img.shields.io/badge/support%20level-community-lightgray.svg)](http://rosindustrial.org/news/2016/10/7/better-supporting-a-growing-ros-industrial-software-platform)
+2. Clone this repository:
 
-Robotiq meta-package.  See the [ROS wiki][] page for more information. 
+    ```
+    git clone https://github.com/ian-chuang/robotiq
+    ```
 
-## License
+3. Optionally, if you wish to control both fingers in Gazebo using the mimic joint plugin, clone the mimic joint plugin repository:
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+    ```
+    git clone https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git
+    ```
 
-## Contents
+4. Navigate to your ROS workspace's source directory and install dependencies:
 
-This repo holds source code for all versions > groovy. For those versions <= groovy see: [SVN repo][]
+    ```
+    cd ~/<your_workspace>/src
+    rosdep install -y --from-paths . --ignore-src --rosdistro ${ROS_DISTRO}
+    ```
 
-[ROS wiki]: http://ros.org/wiki/robotiq
-[SVN repo]: https://code.google.com/p/swri-ros-pkg/source/browse
+5. Build the workspace:
 
+    ```
+    cd ~/<your_workspace>
+    catkin build
+    ```
+
+### Usage
+
+1. Control the Real Gripper using either Publisher Subscriber or Gripper Action Server:
+
+    ```
+    roslaunch robotiq_2f_gripper_control robotiq_2f_85_gripper_rtu.launch port:=<port defaults to /tmp/ttyUR>
+    ```
+
+2. Visualize the Gripper URDF in RViz:
+
+    ```
+    roslaunch robotiq_2f_85_gripper_description view_robotiq_2f_85.launch
+    ```
+
+Feel free to explore and integrate this ROS driver to efficiently control and simulate the Robotiq 2F-85 Gripper in your projects. For additional details, refer to the original [jr-robotics/robotiq](https://github.com/jr-robotics/robotiq) repository.
