@@ -47,6 +47,7 @@ from __future__ import print_function
 
 from pymodbus.client.sync import ModbusSerialClient
 from math import ceil
+import rospy
 
 class ReadGripperError(Exception):
    pass
@@ -117,6 +118,10 @@ class ComModbusRtu:
 
    def readUntilSuccessful(self, num_attempts=20):
       for i in range(num_attempts):
+
+         if rospy.is_shutdown():
+            break
+         
          try:
             self.getStatus(6)
          except ReadGripperError as e:

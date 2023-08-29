@@ -70,7 +70,7 @@ def mainLoop():
 
     if not success:
         rospy.logerr("Failed to connect and read from gripper")
-        raise rospy.ROSInterruptException
+        raise ConnectionError("Unable to establish connection")
 
     # The Gripper status is published on the topic named 'Robotiq2FGripperRobotInput'
     pub = rospy.Publisher(state_topic,
@@ -98,7 +98,5 @@ def mainLoop():
 
 
 if __name__ == '__main__':
-    try:
-        mainLoop()
-    except rospy.ROSInterruptException:
-        pass
+    mainLoop()
+
