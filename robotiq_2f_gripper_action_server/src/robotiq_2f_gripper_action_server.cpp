@@ -127,10 +127,10 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
     sleep_t.sleep();
   }
 
-  // sleep_t.sleep();
+  sleep_t.sleep();
   issueReset();
   
-  // sleep_t.sleep();
+  sleep_t.sleep();
   issueActivation();
   
 }
