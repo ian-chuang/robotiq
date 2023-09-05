@@ -122,17 +122,10 @@ Robotiq2FGripperActionServer::Robotiq2FGripperActionServer(const std::string& na
   as_.start();
 
   ROS_INFO("Waiting for gripper control node");
-  ros::WallDuration sleep_t(0.25); 
+  ros::WallDuration sleep_t(0.02); 
   while (goal_pub_.getNumSubscribers() < 1 && ros::ok()) {
     sleep_t.sleep();
-  }
-
-  sleep_t.sleep();
-  issueReset();
-  
-  sleep_t.sleep();
-  issueActivation();
-  
+  }  
 }
 
 void Robotiq2FGripperActionServer::goalCB()

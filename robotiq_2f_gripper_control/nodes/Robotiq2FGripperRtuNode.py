@@ -71,6 +71,38 @@ def mainLoop():
     if not success:
         rospy.logerr("Failed to connect and read from gripper")
         raise ConnectionError("Unable to establish connection")
+    
+    def reset():
+        cmd = outputMsg()
+        cmd.rACT = 0
+        gripper.refreshCommand(cmd)
+        gripper.sendCommand()
+
+    def activate(timeout=10):
+        cmd = outputMsg()
+        cmd.rACT = 1
+        cmd.rGTO = 1
+        cmd.rPR = 0
+        cmd.rSP = 255
+        cmd.rFR = 150
+        gripper.refreshCommand(cmd)
+        gripper.sendCommand()
+        r = rospy.Rate(30)
+        start_time = rospy.get_time()
+        while not rospy.is_shutdown():
+            if timeout >= 0. and rospy.get_time() - start_time > timeout:
+                return False
+
+            status = gripper.getStatus()
+            is_ready = status.gSTA == 3 and status.gACT == 1
+            if is_ready: return True
+
+            r.sleep()
+
+        return False
+    
+    reset()
+    activate()
 
     # The Gripper status is published on the topic named 'Robotiq2FGripperRobotInput'
     pub = rospy.Publisher(state_topic,
