@@ -186,9 +186,6 @@
           <geometry>
             <box size="0.022 0.00635 0.0375" />
           </geometry>
-          <material name="">
-            <color rgba="0.9 0.0 0.0 1" />
-          </material>
         </collision>
       </link>
     </xacro:macro>

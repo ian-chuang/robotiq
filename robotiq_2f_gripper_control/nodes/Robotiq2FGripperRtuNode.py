@@ -43,8 +43,8 @@ The script takes as an argument the IP address of the gripper. It initializes a 
 
 import sys
 import os
-from robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_output as outputMsg
-from robotiq_2f_gripper_control.msg import _Robotiq2FGripper_robot_input as inputMsg
+from robotiq_2f_gripper_control.msg import Robotiq2FGripper_robot_output as outputMsg
+from robotiq_2f_gripper_control.msg import Robotiq2FGripper_robot_input as inputMsg
 from robotiq_modbus_rtu.comModbusRtu import ComModbusRtu, ReadGripperError, WriteGripperError
 import robotiq_2f_gripper_control.baseRobotiq2FGripper
 import rospy
@@ -81,10 +81,6 @@ def mainLoop():
     def activate(timeout=10):
         cmd = outputMsg()
         cmd.rACT = 1
-        cmd.rGTO = 1
-        cmd.rPR = 0
-        cmd.rSP = 255
-        cmd.rFR = 150
         gripper.refreshCommand(cmd)
         gripper.sendCommand()
         r = rospy.Rate(30)
@@ -102,15 +98,19 @@ def mainLoop():
         return False
     
     reset()
-    activate()
+    success = activate()
+
+    if not success:    
+        rospy.logerr("Failed to activate gripper")
+        raise ConnectionError("Unable to activate gripper")
 
     # The Gripper status is published on the topic named 'Robotiq2FGripperRobotInput'
     pub = rospy.Publisher(state_topic,
-                          inputMsg.Robotiq2FGripper_robot_input, queue_size=1)
+                          inputMsg, queue_size=1)
 
     # The Gripper command is received from the topic named 'Robotiq2FGripperRobotOutput'
     rospy.Subscriber(control_topic,
-                     outputMsg.Robotiq2FGripper_robot_output, gripper.refreshCommand)
+                     outputMsg, gripper.refreshCommand)
 
     # We loop
     while not rospy.is_shutdown():
